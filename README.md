@@ -26,6 +26,7 @@
 - 可以正常启动,完美撒花
     - ![img_6.png](images/img_6.png)
 
-## 
+## 视频地址
+- https://www.bilibili.com/video/BV1J44y1i734?p=1
 
 

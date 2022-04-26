@@ -11,14 +11,14 @@ from utils import plot_curve, one_hot, plot_image
 
 batch_size = 512
 # load dataset
-train_loader = torch.utils.data.DataLoader(torchvision.datasets.MNIST("data", train=True, download=True,
+train_loader = torch.utils.data.DataLoader(torchvision.datasets.MNIST("../data", train=True, download=True,
                                                                       transform=torchvision.transforms.Compose([
                                                                           torchvision.transforms.ToTensor(),
                                                                           torchvision.transforms.Normalize(
                                                                               (0.1307,),(0.3081,)
                                                                           )])),
                                            batch_size= batch_size, shuffle=True)
-test_loader = torch.utils.data.DataLoader(torchvision.datasets.MNIST("data", train=False, download=True,
+test_loader = torch.utils.data.DataLoader(torchvision.datasets.MNIST("../data", train=False, download=True,
                                                                       transform=torchvision.transforms.Compose([
                                                                           torchvision.transforms.ToTensor(),
                                                                           torchvision.transforms.Normalize(
