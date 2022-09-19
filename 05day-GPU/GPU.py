@@ -6,7 +6,7 @@ import torch
 from torch import nn
 from torch import optim
 
-from data.data import train_loader, test_loader, send_to_gpu
+from data.data import send_to_gpu, get_loader
 
 batch_size = 200
 learning_rate = 0.01
@@ -27,7 +27,7 @@ class MLP(nn.Module):
     def forward(self, x):
         return self.model(x)
 
-
+train_loader, test_loader = get_loader()
 device = torch.device("cuda:0")
 net = MLP().to(device)
 optimizer = optim.SGD(net.parameters(), lr=learning_rate)
@@ -39,7 +39,7 @@ train_d = send_to_gpu(train_loader, device)
 for step in range(10):  # 不跑3遍,准确度低, 到5准确度可以提高1个百分点
     for batch_idx, (data, target) in enumerate(train_d):
         data = data.view(-1, 28 * 28)
-        # data, target = data.to(device), target.to(device)  # 每次转移数据 太消耗性能
+        # data, target = data.to(device), target.to(device)  # 每次转移数据 太消耗性能(GPU内存要够大)
         logits = net.forward(data)  # _call_impl
         loss = criteon(logits, target)
 
