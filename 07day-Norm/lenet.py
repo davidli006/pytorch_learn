@@ -6,7 +6,7 @@ import torch
 from torch import nn, optim
 from resnet import ResNet
 
-from data.data import send_to_gpu, get_cifar_train
+from data import send_to_gpu, get_cifar_train
 
 
 class Lenet5(nn.Module):

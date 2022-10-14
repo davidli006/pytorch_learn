@@ -6,7 +6,7 @@ import torch
 from torch import nn
 from torch import optim
 
-from data.data import send_to_gpu, get_loader
+from data import send_to_gpu, get_loader
 
 batch_size = 200
 learning_rate = 0.01

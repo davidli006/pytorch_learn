@@ -6,7 +6,7 @@ import torch
 from torch import nn, optim
 from torch.nn import functional as F
 
-from data.data import get_loader
+from data import get_loader
 
 
 input_size = 28
@@ -15,6 +15,7 @@ num_epochs = 3
 batch_size = 64
 
 train_loader, test_loader = get_loader()
+
 
 
 class CNN(nn.Module):
