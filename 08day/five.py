@@ -1,5 +1,9 @@
 import os
+import time
+
 import cv2
+import numpy as np
+import pyautogui
 
 image_path = "../data/body_posture"
 net = cv2.dnn.readNetFromTensorflow(f"{image_path}/graph_opt.pb")
@@ -14,6 +18,8 @@ POSE_PAIRS = [ ["Neck", "RShoulder"], ["Neck", "LShoulder"], ["RShoulder", "RElb
                ["Neck", "RHip"], ["RHip", "RKnee"], ["RKnee", "RAnkle"], ["Neck", "LHip"],
                ["LHip", "LKnee"], ["LKnee", "LAnkle"], ["Neck", "Nose"], ["Nose", "REye"],
                ["REye", "REar"], ["Nose", "LEye"], ["LEye", "LEar"] ]
+
+HEAD = {"Nose", "REye", "LEye", "REar", "LEar"}
 
 
 def get_file(image_path):
@@ -41,7 +47,7 @@ def show(frame, is_img=True):
         cv2.destroyAllWindows()
 
 
-def draw(frame, is_image=True):
+def draw(frame, is_image=True, head=False):
     width = frame.shape[1]
     height = frame.shape[0]
 
@@ -58,13 +64,17 @@ def draw(frame, is_image=True):
         y = (height * point[1]) / out.shape[2]
         points.append((int(x), int(y)) if conf > 0.2 else None)
 
+    res_head = []
     for partFrom, partTo in POSE_PAIRS:
         idFrom = BODY_PARTS.get(partFrom)
         idTo = BODY_PARTS.get(partTo)
 
         pointFrom = points[idFrom]
         pointTo = points[idTo]
-        if idFrom and idTo and pointFrom and pointTo:
+
+        if pointFrom and pointTo:
+            if partFrom in HEAD and len(res_head)<10:
+                res_head.append(pointFrom)
             cv2.line(frame, pointFrom, pointTo, (0, 255, 0), 3)
             cv2.ellipse(frame, pointFrom, (3, 3), 0, 0, 360, (0, 0, 255), cv2.FILLED)
             cv2.ellipse(frame, pointTo, (3, 3), 0, 0, 360, (0, 0, 255), cv2.FILLED)
@@ -74,9 +84,10 @@ def draw(frame, is_image=True):
     cv2.putText(frame, '%.2fms' % (t / freq), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0))
 
     show(frame, is_image)
+    if head:
+        return res_head
 
-
-def main():
+def from_file():
     file_dict = get_file(image_path)
     print(file_dict)
     for key, value in file_dict.items():
@@ -91,6 +102,22 @@ def main():
                     if not has_flg:
                         continue
                     draw(frame, False)
+
+def from_screen(left, top, width, height):
+    while cv2.waitKey(1) < 0:
+        img = pyautogui.screenshot(region=[left, top, width, height])
+        img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
+        head = draw(img, False, True)
+        if head:
+            l, t =  head[0]
+            print(l, t, left+l, top+t)
+            pyautogui.moveTo(left+l, top+t)
+            time.sleep(3)
+
+# esc 键退出
+def main():
+    from_screen(800, 150, 600, 600)
+
 
 
 if __name__ == "__main__":
