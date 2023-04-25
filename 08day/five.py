@@ -7,6 +7,9 @@ import pyautogui
 
 image_path = "../data/body_posture"
 net = cv2.dnn.readNetFromTensorflow(f"{image_path}/graph_opt.pb")
+# net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+#
+# gpu_frame = cv2.cuda_GpuMat()
 
 BODY_PARTS = { "Nose": 0, "Neck": 1, "RShoulder": 2, "RElbow": 3, "RWrist": 4,
                "LShoulder": 5, "LElbow": 6, "LWrist": 7, "RHip": 8, "RKnee": 9,
@@ -112,7 +115,7 @@ def from_screen(left, top, width, height):
             l, t =  head[0]
             print(l, t, left+l, top+t)
             pyautogui.moveTo(left+l, top+t)
-            time.sleep(3)
+            # time.sleep(1)
 
 # esc 键退出
 def main():
